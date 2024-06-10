@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>No Escalado</title>
+    <script>
+        function clasificarInsecto(event) {
+            event.preventDefault();
+            const tarifaDiaria = document.getElementById('tarifaDiaria').value;
+            const numEmp = document.getElementById('numEmp').value;
+            const tarifaHora = document.getElementById('tarifaHora').value;
+            const ingresoMes = document.getElementById('ingresoMes').value;
+            const tiempoNo = document.getElementById('tiempoNo').value;
+            
+            if (!tarifaDiaria || !numEmp || !tarifaHora || !ingresoMes || !tiempoNo) {
+                document.getElementById('resultado').innerText = 'Por favor, llene todos los campos.';
+                return;
+            }else{
+                fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `tarifaDiaria=${tarifaDiaria}&numEmp=${numEmp}&tarifaHora=${tarifaHora}&ingresoMes=${ingresoMes}&tiempoNo=${tiempoNo}`,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('resultado').innerText = 'Error: ' + data.error;
+                    } else {
+                        document.getElementById('resultado').innerText = 'retención del trabajador: ' + data.categoria;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('resultado').innerText = 'Error en la solicitud.';
+                    console.error('Error:', error);
+                });
+            }
+        }
+    </script>
+    <style>
+        section {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 93vh;
+            justify-content: space-around;
+        }
+        #formulario {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        #resultado {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 16px;
+            color: #333;
+        }
+        footer {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        table {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <div>
+            <form id="formulario" onsubmit="clasificarInsecto(event)">
+                <h1>Clasificador de salidas de empleados</h1>
+                
+                <label for="tarifaDiaria">Tarifa Diaria:</label>
+                <input type="text" id="tarifaDiaria" name="tarifaDiaria">
+                
+                <label for="numEmp">Número de empleado:</label>
+                <input type="text" id="numEmp" name="numEmp">
+                
+                <label for="tarifaHora">Tarifa por hora:</label>
+                <input type="text" id="tarifaHora" name="tarifaHora">
+                
+                <label for="ingresoMes">Ingreso mensual:</label>
+                <input type="text" id="ingresoMes" name="ingresoMes">
+                
+                <label for="tiempoNo">Tiempo extra No:</label>
+                <input type="text" id="tiempoNo" name="tiempoNo">
+                
+                <input type="submit" value="Enviar">
+            </form>
+            <p id="resultado"></p>
+        </div>
+        <div>
+            <h1>Tabla con datos de prueba para predicciones</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Retención</th>
+                        <th>Tarifa Diaria</th>
+                        <th>Número de empleado</th>
+                        <th>Tarifa por hora</th>
+                        <th>Ingreso mensual</th>
+                        <th>Tiempo extra (No)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>yes</td>
+                        <td>230</td>
+                        <td>405</td>
+                        <td>54</td>
+                        <td>1420</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>no</td>
+                        <td>812</td>
+                        <td>411</td>
+                        <td>69</td>
+                        <td>1200</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>yes</td>
+                        <td>1306</td>
+                        <td>614</td>
+                        <td>69</td>
+                        <td>1878</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>no</td>
+                        <td>287</td>
+                        <td>1012</td>
+                        <td>73</td>
+                        <td>1051</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>yes</td>
+                        <td>247</td>
+                        <td>1156</td>
+                        <td>80</td>
+                        <td>1904</td>
+                        <td>1</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2024 Irving Emmanuel Hernandez Reyes. 9 "B" Todos los derechos reservados JAJAlol.</p>
+    </footer>
+</body>
+</html>
