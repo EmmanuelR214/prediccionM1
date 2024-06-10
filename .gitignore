@@ -1,0 +1,13 @@
+myenv/
+
+#ignora python cache
+__pychache__/
+*.pyc
+*.pyo
+
+#ignora macOs
+.DS_Store
+
+#ignora enviriomet variables files
+.env
+.venv
